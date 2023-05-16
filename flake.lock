@@ -1,40 +1,76 @@
 {
   "nodes": {
-    "nixpkgs": {
+    "linux-vf2-src": {
+      "flake": false,
       "locked": {
-        "lastModified": 1677075010,
-        "narHash": "sha256-X+UmR1AkdR//lPVcShmLy8p1n857IGf7y+cyCArp8bU=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "c95bf18beba4290af25c60cbaaceea1110d0f727",
+        "lastModified": 1684205628,
+        "narHash": "sha256-+NU1/AXtpXPVDu0o0wT40xDuRazk0KnrTpc0nbeMOKY=",
+        "owner": "starfive-tech",
+        "repo": "linux",
+        "rev": "a09ac19e5900f54cb58b812067d35d07e666e56e",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixos-22.11",
+        "owner": "starfive-tech",
+        "ref": "JH7110_VisionFive2_upstream",
+        "repo": "linux",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1681027348,
+        "narHash": "sha256-xveJOrVfvdyiB3fyOXkN6Y4zNu0/ZSpPoH1Dy97vUAw=",
+        "owner": "NickCao",
+        "repo": "nixpkgs",
+        "rev": "a191800e228576649c06dae7c7da6bcb121a5e30",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NickCao",
+        "ref": "riscv",
         "repo": "nixpkgs",
         "type": "github"
       }
     },
     "root": {
       "inputs": {
+        "linux-vf2-src": "linux-vf2-src",
         "nixpkgs": "nixpkgs",
-        "ubootSrc": "ubootSrc"
+        "starfive-tools": "starfive-tools",
+        "uboot-vf2-src": "uboot-vf2-src"
       }
     },
-    "ubootSrc": {
+    "starfive-tools": {
       "flake": false,
       "locked": {
-        "lastModified": 1679426509,
-        "narHash": "sha256-2k0KikdRaOs+0FEBNWR1EuPkm8c8OmC1WiZNhI2RL7M=",
-        "owner": "Snektron",
-        "repo": "u-boot-vf2",
-        "rev": "8d35d1590da318531f1f10e6de718ee0d0faf531",
+        "lastModified": 1681470896,
+        "narHash": "sha256-qffCJMA57NZEBEeYYLyvFeoqYnOSRomSob5cVmpFYoo=",
+        "owner": "starfive-tech",
+        "repo": "Tools",
+        "rev": "693661d4ba314424f76c06da1bbb799e9b534c9f",
         "type": "github"
       },
       "original": {
-        "owner": "Snektron",
-        "repo": "u-boot-vf2",
+        "owner": "starfive-tech",
+        "repo": "Tools",
+        "type": "github"
+      }
+    },
+    "uboot-vf2-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1684233997,
+        "narHash": "sha256-XhZECQBM41MNJb8JVvoLitGx7q2vOiQQqcrp2W+1VhI=",
+        "owner": "misuzu",
+        "repo": "u-boot",
+        "rev": "5dce6604909d98840b9a68abb2a75f915d0216df",
+        "type": "github"
+      },
+      "original": {
+        "owner": "misuzu",
+        "ref": "visionfive2",
+        "repo": "u-boot",
         "type": "github"
       }
     }

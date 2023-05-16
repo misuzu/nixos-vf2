@@ -1,170 +1,171 @@
 {
-  description = "VisionFive 2 test flake";
-
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
-
-    ubootSrc = {
+    nixpkgs = {
+      url = "github:NickCao/nixpkgs/riscv";
+    };
+    linux-vf2-src = {
       flake = false;
-      url = "github:Snektron/u-boot-vf2";
+      url = "github:starfive-tech/linux/JH7110_VisionFive2_upstream";
+    };
+    starfive-tools = {
+      flake = false;
+      url = "github:starfive-tech/Tools";
+    };
+    uboot-vf2-src = {
+      flake = false;
+      url = "github:misuzu/u-boot/visionfive2";
     };
   };
 
-  outputs = { self, nixpkgs, ubootSrc }: rec {
+  outputs = inputs: {
     overlays.default = self: super: {
       # glib is broken
       util-linux = super.util-linux.override { translateManpages = false; };
-      neofetch = super.neofetch.override { x11Support = false; };
-    };
 
-    nixosModules = {
-      sdImage = import ./modules/sd-image-visionfive2.nix;
-    };
-
-    nixosConfigurations.sd = nixpkgs.lib.nixosSystem {
-      system = "riscv64-linux";
-      modules = [
-        "${nixpkgs}/nixos/modules/profiles/minimal.nix"
-        ({ lib, config, pkgs, ... }: {
-          imports = [
-            ./modules/sd-image-visionfive2.nix
-          ];
-
-          nixpkgs = {
-            overlays = [ self.overlays.default ];
-
-            localSystem.config = "x86_64-linux";
-            crossSystem.config = "riscv64-linux";
-          };
-
-          hardware.deviceTree.name = "starfive/jh7110-starfive-visionfive-2-v1.2a.dtb";
-
-          sdImage = {
-            spl.image = "${self.packages.x86_64-linux.firmware}/u-boot-spl.bin.normal.out";
-            uboot.image = "${self.packages.x86_64-linux.firmware}/visionfive2_fw_payload.img";
-            firmware.populateCmd = ''
-              ${config.boot.loader.generic-extlinux-compatible.populateCmd} -c ${config.system.build.toplevel} -d ./firmware/boot
-            '';
-          };
-
-          boot = {
-            supportedFilesystems = lib.mkForce [ "vfat" "ext4" ];
-            kernelPackages = pkgs.linuxPackagesFor (pkgs.callPackage ./pkgs/linux-vf2.nix { kernelPatches = [ ]; });
-            kernelParams = [
-              "console=tty0"
-              "console=ttyS0,115200"
-              "earlycon=sbi"
-              "boot.shell_on_fail"
-            ];
-
-            initrd.includeDefaultModules = false;
-            initrd.availableKernelModules = [
-              "dw_mmc-pltfm"
-              "dw_mmc-starfive"
-              "dwmac-starfive"
-              "spi-dw-mmio"
-              "mmc_block"
-              "nvme"
-              "sdhci"
-              "sdhci-pci"
-              "sdhci-of-dwcmshc"
-            ];
-
-            loader = {
-              grub.enable = false;
-              generic-extlinux-compatible.enable = true;
-            };
-          };
-
-          systemd.services."serial-getty@hvc0".enable = false;
-
-          # If getty is not explicitly enabled, it will not start automatically.
-          # https://github.com/NixOS/nixpkgs/issues/84105
-          systemd.services."serial-getty@ttyS0" = {
-            enable = true;
-            wantedBy = [ "getty.target" ];
-            serviceConfig.Restart = "always";
-          };
-
-          services = {
-            openssh = {
-              enable = true;
-              permitRootLogin = "yes";
-            };
-          };
-
-          users = {
-            mutableUsers = false;
-            users.root.password = "secret";
-          };
-
-          system.stateVersion = "22.11";
-
-          environment.systemPackages = with pkgs; [ neofetch lshw pciutils ];
-        })
-      ];
-    };
-
-    packages.x86_64-linux = let
-      pkgs-cross = import nixpkgs {
-        localSystem.config = "x86_64-linux";
-        crossSystem.config = "riscv64-linux";
-      };
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-      };
-    in rec {
-      sd = nixosConfigurations.sd.config.system.build.sdImage;
-      kernel = pkgs-cross.callPackage ./pkgs/linux-vf2.nix { kernelPatches = [ ]; };
-      splTool = pkgs.callPackage ./pkgs/spl_tool.nix { };
-
-      uboot = pkgs-cross.buildUBoot {
-        version = "2021.10";
-        src = ubootSrc;
-        defconfig = "starfive_visionfive2_defconfig";
-        filesToInstall = [
-          "u-boot.bin"
-          "spl/u-boot-spl.bin"
-          "arch/riscv/dts/starfive_visionfive2.dtb"
-        ];
-      };
-
-      opensbi = (pkgs-cross.opensbi.override {
-        withPayload = "${uboot}/u-boot.bin";
-        withFDT = "${uboot}/starfive_visionfive2.dtb";
-      }).overrideAttrs (old: {
-        makeFlags = old.makeFlags ++ [ "FW_TEXT_START=0x40000000" ];
+      linuxPackages_vf2 = self.linuxPackagesFor (self.callPackage ./linux-vf2.nix {
+        src = inputs.linux-vf2-src;
+        kernelPatches = [ ];
       });
 
-      firmware = pkgs-cross.stdenvNoCC.mkDerivation {
-        name = "firmware-vf2";
-        dontUnpack = true;
-        nativeBuildInputs = [ splTool pkgs.dtc pkgs.ubootTools ];
+      opensbi = super.opensbi.overrideAttrs (old: {
+        src = super.fetchFromGitHub {
+          version = "1.3-unstable";
+          owner = "riscv-software-src";
+          repo = "opensbi";
+          rev = "dc1c7db05e075e0910b93504370b50d064a51402";
+          sha256 = "sha256-pOpMgXBCU3X1LESczaOlEjRTIwC9myxqd8ZwHDgGnRc=";
+        };
+      });
+
+      uboot-vf2 = (super.buildUBoot {
+        version = inputs.uboot-vf2-src.shortRev;
+        src = inputs.uboot-vf2-src;
+        defconfig = "starfive_visionfive2_defconfig";
+        filesToInstall = [
+          "u-boot.itb"
+          "spl/u-boot-spl.bin"
+        ];
+        extraMakeFlags = [
+          "OPENSBI=${self.opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin"
+        ];
+      }).overrideAttrs (_: { patches = [ ./u-boot-boot-order.patch ]; });
+
+      spl-tool = self.stdenv.mkDerivation {
+        name = "spl-tool";
+        src = inputs.starfive-tools;
         installPhase = ''
           runHook preInstall
 
-          mkdir -p "$out/"
-          cp ${uboot}/u-boot-spl.bin u-boot-spl.bin
-          spl_tool -c -f ./u-boot-spl.bin -v 0x01010101
-          mv ./u-boot-spl.bin.normal.out "$out/"
-          rm ./u-boot-spl.bin
+          mkdir -p "$out/bin/"
+          cp spl_tool "$out/bin/"
 
-          # TODO: Maybe we can fetch this image directly from github too.
-          substitute ${./visionfive2-uboot-fit-image.its} visionfive2-uboot-fit-image.its \
-            --replace fw_payload.bin ${opensbi}/share/opensbi/lp64/generic/firmware/fw_payload.bin
-          mkimage -f visionfive2-uboot-fit-image.its -A riscv -O u-boot -T firmware $out/visionfive2_fw_payload.img
+          runHook postInstall
+        '';
+        sourceRoot = "source/spl_tool";
+      };
+
+      firmware-vf2 = self.stdenv.mkDerivation {
+        name = "firmware-vf2";
+        dontUnpack = true;
+        nativeBuildInputs = [
+          self.buildPackages.spl-tool
+        ];
+        installPhase = ''
+          runHook preInstall
+
+          cp ${self.uboot-vf2}/u-boot-spl.bin .
+          spl_tool -c -f u-boot-spl.bin
+
+          mkdir -p $out
+          install -Dm444 u-boot-spl.bin.normal.out $out/u-boot-spl.bin.normal.out
+          install -Dm444 ${self.uboot-vf2}/u-boot.itb $out/visionfive2_fw_payload.img
 
           runHook postInstall
         '';
       };
+
+      flash-visionfive2 = self.callPackage ./flash-visionfive2.nix {
+        starfive-tools = inputs.starfive-tools;
+        firmware-vf2 = self.firmware-vf2;
+      };
     };
 
-    devShells.x86_64-linux.default = let
-      pkgs = import nixpkgs { system = "x86_64-linux"; };
-   in pkgs.stdenv.mkDerivation {
-      name = "VisionFive 2 Test";
+    nixosConfigurations = {
+      nixos-cross = inputs.nixpkgs.lib.nixosSystem {
+        system = "riscv64-linux";
+        modules = [
+          ({ lib, config, pkgs, modulesPath, ... }: {
+            nixpkgs = {
+              overlays = [ inputs.self.overlays.default ];
+              localSystem.config = "x86_64-linux";
+              crossSystem.config = "riscv64-linux";
+            };
+          })
+          ./configuration.nix
+        ];
+      };
+      nixos-cross-image-efi = inputs.nixpkgs.lib.nixosSystem {
+        system = "riscv64-linux";
+        modules = [
+          ({ lib, config, pkgs, modulesPath, ... }: {
+            nixpkgs = {
+              overlays = [ inputs.self.overlays.default ];
+              localSystem.config = "x86_64-linux";
+              crossSystem.config = "riscv64-linux";
+            };
+          })
+          ./configuration.nix
+          ./efi-image.nix
+        ];
+      };
 
-      nativeBuildInputs = [ pkgs.picocom ];
+      nixos-native = inputs.nixpkgs.lib.nixosSystem {
+        system = "riscv64-linux";
+        modules = [
+          ({ lib, config, pkgs, modulesPath, ... }: {
+            nixpkgs = {
+              overlays = [ inputs.self.overlays.default ];
+            };
+          })
+          ./configuration.nix
+        ];
+      };
+      nixos-native-image-efi = inputs.nixpkgs.lib.nixosSystem {
+        system = "riscv64-linux";
+        modules = [
+          ({ lib, config, pkgs, modulesPath, ... }: {
+            nixpkgs = {
+              overlays = [ inputs.self.overlays.default ];
+            };
+          })
+          ./configuration.nix
+          ./efi-image.nix
+        ];
+      };
+    };
+
+    packages.x86_64-linux = {
+      nixos-cross = inputs.self.nixosConfigurations.nixos-cross.config.system.build.toplevel;
+      nixos-cross-image-efi = inputs.self.nixosConfigurations.nixos-cross-image-efi.config.system.build.efiImage;
+    } // (import inputs.nixpkgs {
+      overlays = [ inputs.self.overlays.default ];
+      localSystem.config = "x86_64-linux";
+      crossSystem.config = "riscv64-linux";
+    });
+
+    apps.x86_64-linux = let
+      pkgs = import inputs.nixpkgs {
+        system = "x86_64-linux";
+        overlays = [ inputs.self.overlays.default ];
+      };
+      flash-visionfive2 = pkgs.flash-visionfive2.override {
+        firmware-vf2 = inputs.self.packages.x86_64-linux.firmware-vf2;
+      };
+    in {
+      flash-visionfive2 = {
+        type = "app";
+        program = "${flash-visionfive2}/bin/flash-visionfive2";
+      };
     };
   };
 }
