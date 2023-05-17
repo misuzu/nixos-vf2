@@ -51,7 +51,7 @@
     in pkgs.callPackage ./make-efi-image {
       inherit rootImage populateEspCommands;
       skipSize = 1;
-      espSize = 128;
+      espSize = 256;
     };
 
   boot.postBootCommands = ''

@@ -11,7 +11,27 @@ buildLinux (args // {
   version = "${modDirVersion}-vf2";
 
   structuredExtraConfig = with lib.kernel; {
+    CPU_FREQ = yes;
+    CPUFREQ_DT = yes;
+    CPUFREQ_DT_PLATDEV = yes;
+    DMADEVICES = yes;
+    GPIO_SYSFS = yes;
+    HIBERNATION = yes;
+    NO_HZ_IDLE = yes;
+    POWER_RESET_GPIO_RESTART = yes;
+    PROC_KCORE = yes;
+    PWM = yes;
+    PWM_STARFIVE_PTC = yes;
+    RD_GZIP = yes;
+    SENSORS_SFCTEMP = yes;
     SERIAL_8250_DW = yes;
+    SIFIVE_CCACHE = yes;
+    SIFIVE_PLIC = yes;
+
+    RTC_DRV_STARFIVE = yes;
+    SPI_PL022 = yes;
+    SPI_PL022_STARFIVE = yes;
+
     PL330_DMA = no;
   };
 

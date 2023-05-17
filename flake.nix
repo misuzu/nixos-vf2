@@ -19,9 +19,6 @@
 
   outputs = inputs: {
     overlays.default = self: super: {
-      # glib is broken
-      util-linux = super.util-linux.override { translateManpages = false; };
-
       linuxPackages_vf2 = self.linuxPackagesFor (self.callPackage ./linux-vf2.nix {
         src = inputs.linux-vf2-src;
         kernelPatches = [ ];
@@ -93,6 +90,9 @@
     nixosConfigurations = {
       nixos-cross = inputs.nixpkgs.lib.nixosSystem {
         system = "riscv64-linux";
+        specialArgs = {
+          inherit inputs;
+        };
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {

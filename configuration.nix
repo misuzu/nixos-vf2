@@ -21,6 +21,7 @@
     "earlycon=sbi"
     "boot.shell_on_fail"
   ];
+  boot.consoleLogLevel = 7;
   boot.initrd.availableKernelModules = [
     "dw_mmc-starfive" "motorcomm" "dwmac-starfive"
     "cdns3-starfive"
