@@ -12,11 +12,11 @@ nix run github:misuzu/nixos-vf2#flash-visionfive2 /dev/ttyUSB0
 
 ## Write a bootable SD card
 
-An efi image can be created by building the `nixos-image-efi` package:
+An efi image can be created by building the `nixos-cross-image-efi` package:
 ```shell
 nix build github:misuzu/nixos-vf2#nixos-cross-image-efi
 ```
 The resulting image can be flashed to an SD card or an NVMe drive using `dd`:
 ```shell
-sudo dd if=result/efi-image.img of=/dev/your-disk bs=1M oflag=sync status=progress
+sudo dd if=result/nixos-jh7110-starfive-visionfive-2-v1.3b.img of=/dev/your-disk bs=1M oflag=sync status=progress
 ```

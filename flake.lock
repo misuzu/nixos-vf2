@@ -33,10 +33,27 @@
         "type": "github"
       }
     },
+    "nixpkgs-native": {
+      "locked": {
+        "lastModified": 1684935479,
+        "narHash": "sha256-6QMMsXMr2nhmOPHdti2j3KRHt+bai2zw+LJfdCl97Mk=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f91ee3065de91a3531329a674a45ddcb3467a650",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "linux-vf2-src": "linux-vf2-src",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-native": "nixpkgs-native",
         "starfive-tools": "starfive-tools",
         "uboot-vf2-src": "uboot-vf2-src"
       }

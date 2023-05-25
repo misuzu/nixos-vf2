@@ -50,6 +50,7 @@
 
     in pkgs.callPackage ./make-efi-image {
       inherit rootImage populateEspCommands;
+      imageName = "nixos-${lib.removeSuffix ".dtb" (lib.last (lib.splitString "/" config.hardware.deviceTree.name))}.img";
       skipSize = 1;
       espSize = 256;
     };

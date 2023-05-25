@@ -45,6 +45,7 @@
   hardware.deviceTree.name = "starfive/jh7110-starfive-visionfive-2-v1.3b.dtb";
 
   environment.systemPackages = with pkgs; [
+    dtc
     fatresize
     git
     htop
@@ -55,6 +56,7 @@
     pciutils
     socat
     unzip
+    usbutils
     wget
   ];
 

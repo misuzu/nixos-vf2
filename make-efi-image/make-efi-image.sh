@@ -1,5 +1,5 @@
 mkdir -p "$out"
-img="$out/efi-image.img"
+img="$out/$IMAGE_NAME"
 
 rootSizeBlocks="$(du -B 512 --apparent-size "$rootImage" | awk '{ print $1 }')"
 espSizeBlocks="$(( espSize * 1024 * 1024 / 512 ))"

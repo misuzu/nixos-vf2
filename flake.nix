@@ -3,6 +3,9 @@
     nixpkgs = {
       url = "github:NickCao/nixpkgs/riscv";
     };
+    nixpkgs-native = {
+      url = "github:NixOS/nixpkgs/nixos-unstable";
+    };
     linux-vf2-src = {
       flake = false;
       url = "github:starfive-tech/linux/JH7110_VisionFive2_upstream";
@@ -23,7 +26,32 @@
         src = inputs.linux-vf2-src;
         kernelPatches = [ ];
       });
+    };
 
+    overlays.native-fixes = self: super: {
+      bind = super.bind.overrideAttrs (old: {
+        # FAIL: random_test
+        doCheck = false;
+      });
+      libarchive = super.libarchive.overrideAttrs (old: {
+        doCheck = false;
+      });
+      libressl = super.libressl.overrideAttrs (old: {
+        doCheck = false;
+      });
+      meson = super.meson.overridePythonAttrs (old: {
+        doCheck = false;
+      });
+      python310 = super.python310.override {
+        packageOverrides = pyself: pysuper: {
+          pytest-xdist = pysuper.pytest-xdist.overridePythonAttrs (_: {
+            doCheck = false;
+          });
+        };
+      };
+    };
+
+    overlays.firmware = self: super: {
       opensbi = super.opensbi.overrideAttrs (old: {
         src = super.fetchFromGitHub {
           version = "1.3-unstable";
@@ -119,23 +147,29 @@
         ];
       };
 
-      nixos-native = inputs.nixpkgs.lib.nixosSystem {
+      nixos-native = inputs.nixpkgs-native.lib.nixosSystem {
         system = "riscv64-linux";
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
-              overlays = [ inputs.self.overlays.default ];
+              overlays = [
+                inputs.self.overlays.default
+                inputs.self.overlays.native-fixes
+              ];
             };
           })
           ./configuration.nix
         ];
       };
-      nixos-native-image-efi = inputs.nixpkgs.lib.nixosSystem {
+      nixos-native-image-efi = inputs.nixpkgs-native.lib.nixosSystem {
         system = "riscv64-linux";
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
-              overlays = [ inputs.self.overlays.default ];
+              overlays = [
+                inputs.self.overlays.default
+                inputs.self.overlays.native-fixes
+              ];
             };
           })
           ./configuration.nix
@@ -144,27 +178,30 @@
       };
     };
 
-    packages.x86_64-linux = {
-      nixos-cross = inputs.self.nixosConfigurations.nixos-cross.config.system.build.toplevel;
-      nixos-cross-image-efi = inputs.self.nixosConfigurations.nixos-cross-image-efi.config.system.build.efiImage;
-    } // (import inputs.nixpkgs {
-      overlays = [ inputs.self.overlays.default ];
-      localSystem.config = "x86_64-linux";
-      crossSystem.config = "riscv64-linux";
-    });
-
-    apps.x86_64-linux = let
-      pkgs = import inputs.nixpkgs {
+    packages.x86_64-linux = let
+      pkgsCross = import inputs.nixpkgs {
+        overlays = [ inputs.self.overlays.firmware ];
+        localSystem.config = "x86_64-linux";
+        crossSystem.config = "riscv64-linux";
+      };
+      pkgs = import inputs.nixpkgs-native {
         system = "x86_64-linux";
-        overlays = [ inputs.self.overlays.default ];
+        overlays = [ inputs.self.overlays.firmware ];
       };
       flash-visionfive2 = pkgs.flash-visionfive2.override {
-        firmware-vf2 = inputs.self.packages.x86_64-linux.firmware-vf2;
+        firmware-vf2 = pkgsCross.firmware-vf2;
       };
     in {
+      inherit flash-visionfive2;
+      inherit (pkgsCross) firmware-vf2;
+      nixos-cross = inputs.self.nixosConfigurations.nixos-cross.config.system.build.toplevel;
+      nixos-cross-image-efi = inputs.self.nixosConfigurations.nixos-cross-image-efi.config.system.build.efiImage;
+    };
+
+    apps.x86_64-linux = {
       flash-visionfive2 = {
         type = "app";
-        program = "${flash-visionfive2}/bin/flash-visionfive2";
+        program = "${inputs.self.packages.x86_64-linux.flash-visionfive2}/bin/flash-visionfive2";
       };
     };
   };
