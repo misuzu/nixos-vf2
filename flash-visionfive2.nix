@@ -53,7 +53,7 @@ in writeShellScriptBin "flash-visionfive2" ''
 
   EOF
 
-  if [ ! -f $1 ]; then
+  if [ ! -e $1 ]; then
     echo "Device $1 doesn't exist"
     exit 1
   fi

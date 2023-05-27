@@ -89,8 +89,8 @@
         sourceRoot = "source/spl_tool";
       };
 
-      firmware-vf2 = self.stdenv.mkDerivation {
-        name = "firmware-vf2";
+      firmware-vf2-upstream = self.stdenv.mkDerivation {
+        name = "firmware-vf2-upstream";
         dontUnpack = true;
         nativeBuildInputs = [
           self.buildPackages.spl-tool
@@ -109,9 +109,31 @@
         '';
       };
 
-      flash-visionfive2 = self.callPackage ./flash-visionfive2.nix {
+      firmware-vf2-vendor = self.linkFarm "firmware-vf2-vendor" [
+        {
+          name = "u-boot-spl.bin.normal.out";
+          path = self.fetchurl {
+            url = "https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v2.11.5/u-boot-spl.bin.normal.out";
+            hash = "sha256-oIRV/gdnm9qG7ir6euo1qEv4LzDO0IU5UFjDFFo6x00=";
+          };
+        }
+        {
+          name = "visionfive2_fw_payload.img";
+          path = self.fetchurl {
+            url = "https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v2.11.5/visionfive2_fw_payload.img";
+            hash = "sha256-IF/f2E03ZS9WUzUOMXQJ6asYO4ar+b1bSYAA8M0AH4o=";
+          };
+        }
+      ];
+
+      flash-visionfive2-upstream = self.callPackage ./flash-visionfive2.nix {
         starfive-tools = inputs.starfive-tools;
-        firmware-vf2 = self.firmware-vf2;
+        firmware-vf2 = self.firmware-vf2-upstream;
+      };
+
+      flash-visionfive2-vendor = self.callPackage ./flash-visionfive2.nix {
+        starfive-tools = inputs.starfive-tools;
+        firmware-vf2 = self.firmware-vf2-vendor;
       };
     };
 
@@ -188,20 +210,24 @@
         system = "x86_64-linux";
         overlays = [ inputs.self.overlays.firmware ];
       };
-      flash-visionfive2 = pkgs.flash-visionfive2.override {
-        firmware-vf2 = pkgsCross.firmware-vf2;
+      flash-visionfive2-upstream = pkgs.flash-visionfive2-upstream.override {
+        firmware-vf2 = pkgsCross.firmware-vf2-upstream;
       };
     in {
-      inherit flash-visionfive2;
-      inherit (pkgsCross) firmware-vf2;
+      inherit flash-visionfive2-upstream;
+      inherit (pkgs) flash-visionfive2-vendor;
       nixos-cross = inputs.self.nixosConfigurations.nixos-cross.config.system.build.toplevel;
       nixos-cross-image-efi = inputs.self.nixosConfigurations.nixos-cross-image-efi.config.system.build.efiImage;
     };
 
     apps.x86_64-linux = {
-      flash-visionfive2 = {
+      flash-visionfive2-upstream = {
         type = "app";
-        program = "${inputs.self.packages.x86_64-linux.flash-visionfive2}/bin/flash-visionfive2";
+        program = "${inputs.self.packages.x86_64-linux.flash-visionfive2-upstream}/bin/flash-visionfive2";
+      };
+      flash-visionfive2-vendor = {
+        type = "app";
+        program = "${inputs.self.packages.x86_64-linux.flash-visionfive2-vendor}/bin/flash-visionfive2";
       };
     };
   };

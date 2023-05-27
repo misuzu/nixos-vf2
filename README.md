@@ -7,7 +7,7 @@ Flip the tiny switches towards the H (as opposed to L) marking on the PCB (towar
 Power up, and assuming your serial device is `/dev/ttyUSB0`, run:
 
 ```shellSession
-nix run github:misuzu/nixos-vf2#flash-visionfive2 /dev/ttyUSB0
+nix run github:misuzu/nixos-vf2#flash-visionfive2-vendor /dev/ttyUSB0
 ```
 
 ## Write a bootable SD card
