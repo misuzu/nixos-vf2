@@ -3,11 +3,11 @@
     "linux-vf2-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1684205628,
-        "narHash": "sha256-+NU1/AXtpXPVDu0o0wT40xDuRazk0KnrTpc0nbeMOKY=",
+        "lastModified": 1684983813,
+        "narHash": "sha256-d9i/LPAKt2rdUo8YEhitIgTvsBwBOzNjOzz9mPw8UUQ=",
         "owner": "starfive-tech",
         "repo": "linux",
-        "rev": "a09ac19e5900f54cb58b812067d35d07e666e56e",
+        "rev": "b8692bacc1a14128ed561ea6ad27d6e1e2114f1d",
         "type": "github"
       },
       "original": {
