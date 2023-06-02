@@ -16,7 +16,7 @@ An efi image can be created by building the `nixos-cross-image-efi` package:
 ```shell
 nix build github:misuzu/nixos-vf2#nixos-cross-image-efi
 ```
-The resulting image can be flashed to an SD card or an NVMe drive using `dd`:
+The resulting image can be flashed to an SD card using `dd`:
 ```shell
-sudo dd if=result/nixos-jh7110-starfive-visionfive-2-v1.3b.img of=/dev/your-disk bs=1M oflag=sync status=progress
+sudo dd if=result/nixos-cross-jh7110-starfive-visionfive-2-v1.3b.img of=/dev/your-disk bs=1M oflag=sync status=progress
 ```

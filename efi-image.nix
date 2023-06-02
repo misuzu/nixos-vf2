@@ -50,7 +50,11 @@
 
     in pkgs.callPackage ./make-efi-image {
       inherit rootImage populateEspCommands;
-      imageName = "nixos-${lib.removeSuffix ".dtb" (lib.last (lib.splitString "/" config.hardware.deviceTree.name))}.img";
+      imageName = let
+        imageType = if (with pkgs.stdenv; hostPlatform == buildPlatform) then "native" else "cross";
+        boardName = lib.removeSuffix ".dtb" (lib.last (lib.splitString "/" config.hardware.deviceTree.name));
+      in
+        "nixos-${imageType}-${boardName}.img";
       skipSize = 1;
       espSize = 256;
     };
