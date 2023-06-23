@@ -15,7 +15,7 @@ let
     expect "CC"
     send "\x01\x13"
     expect "*** file:"
-    send "${starfive-tools}/recovery/jh7110-recovery-20221205.bin"
+    send "${starfive-tools}/recovery/jh7110-recovery-20230322.bin"
     send "\r"
     expect "Transfer complete"
 
