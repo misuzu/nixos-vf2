@@ -57,13 +57,13 @@
     };
 
     overlays.firmware = self: super: {
-      opensbi = super.opensbi.overrideAttrs (old: {
+      opensbi = super.opensbi.overrideAttrs (old: rec {
+        version = "1.3";
         src = super.fetchFromGitHub {
-          version = "1.3-unstable";
           owner = "riscv-software-src";
           repo = "opensbi";
-          rev = "dc1c7db05e075e0910b93504370b50d064a51402";
-          sha256 = "sha256-pOpMgXBCU3X1LESczaOlEjRTIwC9myxqd8ZwHDgGnRc=";
+          rev = "v${version}";
+          sha256 = "sha256-Dr16fVUGLYGnGYHkjAyqpJxt8p95F0CJIU9ESGWKGWo=";
         };
       });
 
