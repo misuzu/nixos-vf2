@@ -5,7 +5,7 @@
 } @ args:
 
 let
-  modDirVersion = "6.4.0-rc6";
+  modDirVersion = "6.4.0";
 in
 buildLinux (args // {
   inherit modDirVersion;
