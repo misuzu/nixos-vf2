@@ -34,6 +34,10 @@
     };
 
     overlays.native-fixes = self: super: {
+      nix = super.nix.override {
+        # mdbook Error: Rendering failed. Caused By: The "linkcheck" renderer failed
+        enableDocumentation = false;
+      };
       bind = super.bind.overrideAttrs (old: {
         # FAIL: random_test
         doCheck = false;
