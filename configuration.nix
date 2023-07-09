@@ -50,6 +50,7 @@
     dtc
     fatresize
     git
+    gptfdisk
     htop
     lshw
     mc
