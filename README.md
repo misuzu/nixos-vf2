@@ -10,6 +10,13 @@ Power up, and assuming your serial device is `/dev/ttyUSB0`, run:
 nix run github:misuzu/nixos-vf2#flash-visionfive2-vendor /dev/ttyUSB0
 ```
 
+If you have issues botting the SD image, try resetting u-boot environment variables using these commands (via UART):
+
+```
+env default -a
+saveenv
+```
+
 ## Write a bootable SD card
 
 An efi image can be created by building the `nixos-cross-image-efi` package:
