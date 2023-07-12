@@ -37,7 +37,7 @@ If you want to store vf2's firmware on an SD card, you need to partition it as f
 
 ```shell
 # sgdisk is from gptfdisk package
-sudo sgdisk --clear --set-alignment=1 \
+sudo sgdisk -g --clear --set-alignment=1 \
 --new=1:4096:8191 --change-name=1:'spl' --typecode=1:2e54b353-1271-4842-806f-e436d6af6985 \
 --new=2:8192:40959 --change-name=2:'opensbi-uboot' --typecode=2:5b193300-fc78-40cd-8002-e86c45580b47 \
 --new=3:40960:+256M --change-name=3:'efi' --typecode=3:C12A7328-F81F-11D2-BA4B-00A0C93EC93B \
@@ -48,7 +48,7 @@ sudo sgdisk --clear --set-alignment=1 \
 After partitioning, write `u-boot-spl.bin.normal.out` to the first partition and `visionfive2_fw_payload.img` to the second partition.
 ```shell
 sudo dd if=u-boot-spl.bin.normal.out of=/dev/your-disk1 bs=4096 status=progress
-sudo dd if=visionfive2_fw_payload.img of=/dev/sd*2 bs=4096 status=progress
+sudo dd if=visionfive2_fw_payload.img of=/dev/your-disk2 bs=4096 status=progress
 ```
 
 Now use `dd` to copy efi and root partition from the image:
