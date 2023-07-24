@@ -1,43 +1,14 @@
 { lib
 , buildLinux
-, fetchpatch
 , ...
 } @ args:
 
 let
-  modDirVersion = "6.4.0";
+  modDirVersion = "6.5.0-rc1";
 in
 buildLinux (args // {
   inherit modDirVersion;
   version = "${modDirVersion}-vf2";
-
-  kernelPatches = [
-    # https://lore.kernel.org/all/20230524000012.15028-1-andre.przywara@arm.com/
-    rec {
-      name = "axp15060-1.patch";
-      patch = fetchpatch {
-        inherit name;
-        url = "https://lore.kernel.org/all/20230524000012.15028-2-andre.przywara@arm.com/raw";
-        hash = "sha256-kj4vQaT4CV29EHv8MtuTgM/semIPDdv2dmveo/X27vU=";
-      };
-    }
-    rec {
-      name = "axp15060-2.patch";
-      patch = fetchpatch {
-        inherit name;
-        url = "https://lore.kernel.org/all/20230524000012.15028-3-andre.przywara@arm.com/raw";
-        hash = "sha256-QCPQyKqoapMtqEDB9QgAuXA7n8e1OtG+YlIgeSQBxXM=";
-      };
-    }
-    rec {
-      name = "axp15060-3.patch";
-      patch = fetchpatch {
-        inherit name;
-        url = "https://lore.kernel.org/all/20230524000012.15028-4-andre.przywara@arm.com/raw";
-        hash = "sha256-SpKDm4PXR6qs7kX5SGVpFF/EPBijMhX1NsFUHrlCynM=";
-      };
-    }
-  ];
 
   structuredExtraConfig = with lib.kernel; {
     CPU_FREQ = yes;
@@ -76,7 +47,7 @@ buildLinux (args // {
 
   extraMeta = {
     branch = "visionfive2";
-    maintainers = with lib.maintainers; [ nickcao ];
+    maintainers = with lib.maintainers; [ misuzu ];
     description = "Linux kernel for StarFive's VisionFive2";
     platforms = [ "riscv64-linux" ];
   };
