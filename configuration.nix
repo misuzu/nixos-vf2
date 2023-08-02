@@ -39,7 +39,7 @@
     "nvme"
   ];
   boot.blacklistedKernelModules = [
-    "clk-starfive-jh7110-vout"
+    "jh7110-crypto"
   ];
 
   hardware.deviceTree.name = "starfive/jh7110-starfive-visionfive-2-v1.3b.dtb";
