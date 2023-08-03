@@ -82,7 +82,7 @@
         extraMakeFlags = [
           "OPENSBI=${self.opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin"
         ];
-      }).overrideAttrs (_: { patches = [ ./u-boot-boot-order.patch ]; });
+      }).overrideAttrs (_: { patches = [ ]; });
 
       spl-tool = self.stdenv.mkDerivation {
         name = "spl-tool";
