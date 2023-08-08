@@ -141,14 +141,14 @@
           name = "u-boot-spl.bin.normal.out";
           path = self.fetchurl {
             url = "https://github.com/starfive-tech/edk2/releases/download/REL_VF2_JUN2023/u-boot-spl.bin.normal.out";
-            hash = "sha256-7289L7Z0vmzg/hdtWU/1kaefNlbSdPDnmD7TMh39gqk=";
+            hash = "sha256-ep9gAbH3MJ9jDbYWKUaqyyluLVvmXJO5pI2tCtdSsb8=";
           };
         }
         {
           name = "visionfive2_fw_payload.img";
           path = self.fetchurl {
             url = "https://github.com/starfive-tech/edk2/releases/download/REL_VF2_JUN2023/JH7110.fd";
-            hash = "sha256-9K/Jp9i2vOMnWyTYCLA/TupAtmQhoIeotqEkV11ZZOo=";
+            hash = "sha256-KgzB7hPEBPy53RsTgVnOXeAyZKmQD5/I6EBtDuSGYnE=";
           };
         }
       ];
@@ -249,6 +249,9 @@
       inherit flash-visionfive2-upstream;
       inherit (pkgs) flash-visionfive2-vendor;
       inherit (pkgs) flash-visionfive2-edk2-vendor;
+      inherit (pkgs) firmware-vf2-vendor;
+      inherit (pkgs) firmware-vf2-edk2-vendor;
+      inherit (pkgsCross) firmware-vf2-upstream;
       nixos-cross = inputs.self.nixosConfigurations.nixos-cross.config.system.build.toplevel;
       nixos-cross-image-efi = inputs.self.nixosConfigurations.nixos-cross-image-efi.config.system.build.efiImage;
     };
