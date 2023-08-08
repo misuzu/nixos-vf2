@@ -79,7 +79,8 @@
           "u-boot.itb"
           "spl/u-boot-spl.bin"
         ];
-        extraMakeFlags = [
+        makeFlags = [
+          "CROSS_COMPILE=${super.stdenv.cc.targetPrefix}"
           "OPENSBI=${self.opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin"
         ];
       }).overrideAttrs (_: { patches = [ ]; });
