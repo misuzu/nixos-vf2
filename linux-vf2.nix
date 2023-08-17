@@ -37,9 +37,6 @@ buildLinux (args // {
     MFD_AXP20X_I2C = yes;
     REGULATOR_AXP20X = yes;
 
-    # FATAL: modpost: drivers/gpu/drm/verisilicon/vs_drm: struct of_device_id is not terminated with a NULL entry!
-    DRM_VERISILICON = no;
-
     PL330_DMA = no;
   };
 
