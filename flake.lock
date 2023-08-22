@@ -77,16 +77,16 @@
     "uboot-vf2-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1692166155,
-        "narHash": "sha256-eRy38QsgJoNlTo38cTXh48OGXXQHP4vzuAPextDtccY=",
+        "lastModified": 1692709066,
+        "narHash": "sha256-f38ffKE1/MmAA0OyqM/9TpI/hmmMBXorYoDegFxXl8E=",
         "owner": "misuzu",
         "repo": "u-boot",
-        "rev": "0850e3a5b9d02cc5d9c06dbd22e97a16c67285e8",
+        "rev": "5edb2e029041117b360230fcfa4d9df7c7b071e5",
         "type": "github"
       },
       "original": {
         "owner": "misuzu",
-        "ref": "visionfive2-usb",
+        "ref": "visionfive2",
         "repo": "u-boot",
         "type": "github"
       }

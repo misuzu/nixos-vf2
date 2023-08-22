@@ -21,7 +21,7 @@
     };
     uboot-vf2-src = {
       flake = false;
-      url = "github:misuzu/u-boot/visionfive2-usb";
+      url = "github:misuzu/u-boot/visionfive2";
     };
   };
 
