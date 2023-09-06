@@ -4,7 +4,7 @@
 } @ args:
 
 let
-  modDirVersion = "6.5.0-rc1";
+  modDirVersion = "6.5.0";
 in
 buildLinux (args // {
   inherit modDirVersion;
@@ -36,6 +36,10 @@ buildLinux (args // {
     MFD_AXP20X = yes;
     MFD_AXP20X_I2C = yes;
     REGULATOR_AXP20X = yes;
+
+    DRM = yes;
+    DRM_VERISILICON = yes;
+    STARFIVE_HDMI = yes;
 
     PL330_DMA = no;
   };

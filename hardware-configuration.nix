@@ -21,6 +21,6 @@
   fileSystems."/" = {
     device = "/dev/disk/by-label/NIXOS_ROOT";
     fsType = "ext4";
-    options = [ "noatime" "nodiratime" ];
+    options = [ "noatime" "nodiratime" "norelatime" ];
   };
 }
