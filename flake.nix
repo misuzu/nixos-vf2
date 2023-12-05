@@ -34,30 +34,9 @@
     };
 
     overlays.native-fixes = self: super: {
-      nix = super.nix.override {
-        # mdbook Error: Rendering failed. Caused By: The "linkcheck" renderer failed
-        enableDocumentation = false;
-      };
       bind = super.bind.overrideAttrs (old: {
-        # FAIL: random_test
         doCheck = false;
       });
-      libarchive = super.libarchive.overrideAttrs (old: {
-        doCheck = false;
-      });
-      libressl = super.libressl.overrideAttrs (old: {
-        doCheck = false;
-      });
-      meson = super.meson.overridePythonAttrs (old: {
-        doCheck = false;
-      });
-      python310 = super.python310.override {
-        packageOverrides = pyself: pysuper: {
-          pytest-xdist = pysuper.pytest-xdist.overridePythonAttrs (_: {
-            doCheck = false;
-          });
-        };
-      };
     };
 
     overlays.firmware = self: super: {
