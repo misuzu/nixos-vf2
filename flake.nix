@@ -9,7 +9,7 @@
       url = "github:NickCao/nixpkgs/riscv";
     };
     nixpkgs-native = {
-      url = "github:NixOS/nixpkgs/nixos-unstable";
+      url = "github:NixOS/nixpkgs/staging-next";
     };
     linux-vf2-src = {
       flake = false;
