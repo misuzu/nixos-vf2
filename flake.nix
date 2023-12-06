@@ -153,6 +153,7 @@
             };
           })
           ./configuration.nix
+          ./systemd-boot.nix
         ];
       };
       nixos-cross-image-efi = inputs.nixpkgs.lib.nixosSystem {
@@ -167,6 +168,21 @@
           })
           ./configuration.nix
           ./efi-image.nix
+          ./systemd-boot.nix
+        ];
+      };
+      nixos-cross-image-iso = inputs.nixpkgs.lib.nixosSystem {
+        system = "riscv64-linux";
+        modules = [
+          ({ lib, config, pkgs, modulesPath, ... }: {
+            nixpkgs = {
+              overlays = [ inputs.self.overlays.default ];
+              localSystem.config = "x86_64-linux";
+              crossSystem.config = "riscv64-linux";
+            };
+          })
+          ./configuration.nix
+          ./iso-image.nix
         ];
       };
 
@@ -182,6 +198,7 @@
             };
           })
           ./configuration.nix
+          ./systemd-boot.nix
         ];
       };
       nixos-native-image-efi = inputs.nixpkgs-native.lib.nixosSystem {
@@ -197,6 +214,22 @@
           })
           ./configuration.nix
           ./efi-image.nix
+          ./systemd-boot.nix
+        ];
+      };
+      nixos-native-image-iso = inputs.nixpkgs-native.lib.nixosSystem {
+        system = "riscv64-linux";
+        modules = [
+          ({ lib, config, pkgs, modulesPath, ... }: {
+            nixpkgs = {
+              overlays = [
+                inputs.self.overlays.default
+                inputs.self.overlays.native-fixes
+              ];
+            };
+          })
+          ./configuration.nix
+          ./iso-image.nix
         ];
       };
     };
@@ -223,6 +256,7 @@
       inherit (pkgsCross) firmware-vf2-upstream;
       nixos-cross = inputs.self.nixosConfigurations.nixos-cross.config.system.build.toplevel;
       nixos-cross-image-efi = inputs.self.nixosConfigurations.nixos-cross-image-efi.config.system.build.efiImage;
+      nixos-cross-image-iso = inputs.self.nixosConfigurations.nixos-cross-image-iso.config.system.build.isoImage;
     };
 
     apps.x86_64-linux = {
