@@ -77,11 +77,11 @@
     "uboot-vf2-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1700600157,
-        "narHash": "sha256-Lbv6Ldno0UoOOt0x1DgrLxAdXAHFMXbA7YYE6rZ0Q4o=",
+        "lastModified": 1701858257,
+        "narHash": "sha256-dgI+g1gCIkcfbjsytweWfAwqF8Y2aIu3ZU1CbkqoReQ=",
         "owner": "misuzu",
         "repo": "u-boot",
-        "rev": "2e3feb5fbac891e105c521aa479ccbf59c04903f",
+        "rev": "923e0dcf7d5040f65e63b67464a1b64bd4e8cbff",
         "type": "github"
       },
       "original": {
