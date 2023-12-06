@@ -7,10 +7,10 @@ Flip the tiny switches towards the H (as opposed to L) marking on the PCB (towar
 Power up, and assuming your serial device is `/dev/ttyUSB0`, run:
 
 ```shellSession
-nix run github:misuzu/nixos-vf2#flash-visionfive2-vendor /dev/ttyUSB0
+nix run github:misuzu/nixos-vf2#flash-visionfive2-upstream /dev/ttyUSB0
 ```
 
-If you have issues botting the SD image, try resetting u-boot environment variables using these commands (via UART):
+If you have issues booting the SD image, try resetting u-boot environment variables using these commands (via UART):
 
 ```
 env default -a
