@@ -37,6 +37,13 @@
       bind = super.bind.overrideAttrs (old: {
         doCheck = false;
       });
+      python311 = super.python311.override {
+        packageOverrides = pyself: pysuper: {
+          numpy = pysuper.numpy.overridePythonAttrs (_: {
+            doCheck = false;
+          });
+        };
+      };
     };
 
     overlays.firmware = self: super: {
