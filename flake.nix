@@ -99,15 +99,15 @@
         {
           name = "u-boot-spl.bin.normal.out";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v3.1.5/u-boot-spl.bin.normal.out";
-            hash = "sha256-O8+VZJQKu11I1K91dyJP4DjRt3qk+VnbxzDdeSHZLiM=";
+            url = "https://github.com/starfive-tech/VisionFive2/releases/download/JH7110_VF2_515_v5.10.3/u-boot-spl.bin.normal.out";
+            hash = "sha256-TxRRwNvZi9+b9mvCZ/xCR9J7jnk7/WhLjRQrBYys2fI=";
           };
         }
         {
           name = "visionfive2_fw_payload.img";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v3.1.5/visionfive2_fw_payload.img";
-            hash = "sha256-kbxOSSIBCFIFPu1kzYAF9fghCHCaRqZR5EgkD9/H0iY=";
+            url = "https://github.com/starfive-tech/VisionFive2/releases/download/JH7110_VF2_515_v5.10.3/visionfive2_fw_payload.img";
+            hash = "sha256-4r65pOoQCCtTzfZ6yuSw2nEqHQNSUNYQ4F458l7Nlyk=";
           };
         }
       ];
