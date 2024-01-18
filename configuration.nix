@@ -12,7 +12,6 @@
     "dw_mmc-starfive" "motorcomm" "dwmac-starfive"
     "cdns3-starfive"
     "jh7110-trng"
-    "jh7110-crypto"
     "phy-jh7110-usb"
     "clk-starfive-jh7110-aon"
     "clk-starfive-jh7110-stg"
@@ -22,9 +21,6 @@
     "phy-jh7110-pcie"
     "pcie-starfive"
     "nvme"
-  ];
-  boot.blacklistedKernelModules = [
-    "jh7110-crypto"
   ];
 
   hardware.deviceTree.name = "starfive/jh7110-starfive-visionfive-2-v1.3b.dtb";
