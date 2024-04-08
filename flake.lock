@@ -1,22 +1,5 @@
 {
   "nodes": {
-    "linux-vf2-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1705574974,
-        "narHash": "sha256-bwB7Pc+Z+MWXPfWYdgtRGuhqjiNHLDGNCY62e4lBGvE=",
-        "owner": "starfive-tech",
-        "repo": "linux",
-        "rev": "13eb70da2a73187c8c7aece13d23d68928aa8210",
-        "type": "github"
-      },
-      "original": {
-        "owner": "starfive-tech",
-        "ref": "JH7110_VisionFive2_upstream",
-        "repo": "linux",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1711735929,
@@ -51,44 +34,8 @@
     },
     "root": {
       "inputs": {
-        "linux-vf2-src": "linux-vf2-src",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-native": "nixpkgs-native",
-        "starfive-tools": "starfive-tools",
-        "uboot-vf2-src": "uboot-vf2-src"
-      }
-    },
-    "starfive-tools": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1681470896,
-        "narHash": "sha256-qffCJMA57NZEBEeYYLyvFeoqYnOSRomSob5cVmpFYoo=",
-        "owner": "starfive-tech",
-        "repo": "Tools",
-        "rev": "693661d4ba314424f76c06da1bbb799e9b534c9f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "starfive-tech",
-        "repo": "Tools",
-        "type": "github"
-      }
-    },
-    "uboot-vf2-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1712055538,
-        "narHash": "sha256-IlaDdjKq/Pq2orzcU959h93WXRZfvKBGDO/MFw9mZMg=",
-        "owner": "u-boot",
-        "repo": "u-boot",
-        "rev": "25049ad560826f7dc1c4740883b0016014a59789",
-        "type": "github"
-      },
-      "original": {
-        "owner": "u-boot",
-        "ref": "v2024.04",
-        "repo": "u-boot",
-        "type": "github"
+        "nixpkgs-native": "nixpkgs-native"
       }
     }
   },

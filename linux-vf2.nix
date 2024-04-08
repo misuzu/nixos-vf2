@@ -1,5 +1,6 @@
 { lib
 , buildLinux
+, fetchFromGitHub
 , ...
 } @ args:
 
@@ -9,6 +10,13 @@ in
 buildLinux (args // {
   inherit modDirVersion;
   version = "${modDirVersion}-vf2";
+
+  src = fetchFromGitHub {
+    owner = "starfive-tech";
+    repo = "linux";
+    rev = "076ede06c00a4069cd9f90d609eaf35bf1bdc68a";
+    hash = "sha256-oI048iCkvghEIiuDHbxNHtJz/krPwXPB/HB85YUaxL8=";
+  };
 
   structuredExtraConfig = with lib.kernel; {
     CPU_FREQ = yes;
@@ -42,6 +50,12 @@ buildLinux (args // {
     STARFIVE_HDMI = yes;
 
     PL330_DMA = no;
+
+    # Disable some drivers that we don't need to make the build leaner
+    NET_VENDOR_MELLANOX = no;
+    NET_VENDOR_MARVELL = no;
+    DRM_NOUVEAU = no;
+    DRM_INTEL = no;
   };
 
   preferBuiltin = true;

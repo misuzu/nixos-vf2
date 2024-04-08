@@ -4,31 +4,12 @@
     extra-trusted-public-keys = [ "cache.ztier.link-1:3P5j2ZB9dNgFFFVkCQWT3mh0E+S3rIWtZvoql64UaXM=" ];
   };
 
-  inputs = {
-    nixpkgs = {
-      url = "github:NickCao/nixpkgs/riscv";
-    };
-    nixpkgs-native = {
-      url = "github:NixOS/nixpkgs/nixos-unstable";
-    };
-    linux-vf2-src = {
-      flake = false;
-      url = "github:starfive-tech/linux/JH7110_VisionFive2_upstream";
-    };
-    starfive-tools = {
-      flake = false;
-      url = "github:starfive-tech/Tools";
-    };
-    uboot-vf2-src = {
-      flake = false;
-      url = "github:u-boot/u-boot/v2024.04";
-    };
-  };
+  inputs.nixpkgs.url = "github:NickCao/nixpkgs/riscv";
+  inputs.nixpkgs-native.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs = inputs: {
     overlays.default = self: super: {
       linuxPackages_vf2 = self.linuxPackagesFor (self.callPackage ./linux-vf2.nix {
-        src = inputs.linux-vf2-src;
         kernelPatches = [ ];
       });
     };
@@ -43,9 +24,12 @@
     };
 
     overlays.firmware = self: super: {
-      uboot-vf2 = (super.buildUBoot {
-        version = inputs.uboot-vf2-src.shortRev;
-        src = inputs.uboot-vf2-src;
+      uboot-vf2 = (super.buildUBoot rec {
+        version = "2024.04";
+        src = super.fetchurl {
+          url = "https://ftp.denx.de/pub/u-boot/u-boot-${version}.tar.bz2";
+          hash = "sha256-GKhT/jn6160DqQzC1Cda6u1tppc13vrDSSuAUIhD3Uo=";
+        };
         defconfig = "starfive_visionfive2_defconfig";
         filesToInstall = [
           "u-boot.itb"
@@ -59,7 +43,12 @@
 
       spl-tool = self.stdenv.mkDerivation {
         name = "spl-tool";
-        src = inputs.starfive-tools;
+        src = super.fetchFromGitHub {
+          owner = "starfive-tech";
+          repo = "Tools";
+          rev = "0747c0510e090f69bf7d2884f44903b77b3db5c5";
+          hash = "sha256-up58PtvnZTi6rGZcP2VwZrZBYajrZf4MzILixqaNKbE=";
+        };
         installPhase = ''
           runHook preInstall
 
