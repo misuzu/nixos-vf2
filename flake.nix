@@ -21,7 +21,7 @@
     };
     uboot-vf2-src = {
       flake = false;
-      url = "github:misuzu/u-boot/visionfive2";
+      url = "github:u-boot/u-boot/v2024.04";
     };
   };
 
@@ -99,15 +99,15 @@
         {
           name = "u-boot-spl.bin.normal.out";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/VisionFive2/releases/download/JH7110_VF2_515_v5.10.3/u-boot-spl.bin.normal.out";
-            hash = "sha256-TxRRwNvZi9+b9mvCZ/xCR9J7jnk7/WhLjRQrBYys2fI=";
+            url = "https://github.com/starfive-tech/VisionFive2/releases/download/JH7110_VF2_515_v5.11.3/u-boot-spl.bin.normal.out";
+            hash = "sha256-LlOxDSBv8fcTlshIo0IF4Pvp2Sea0KEKDMNykiaG9Tg=";
           };
         }
         {
           name = "visionfive2_fw_payload.img";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/VisionFive2/releases/download/JH7110_VF2_515_v5.10.3/visionfive2_fw_payload.img";
-            hash = "sha256-4r65pOoQCCtTzfZ6yuSw2nEqHQNSUNYQ4F458l7Nlyk=";
+            url = "https://github.com/starfive-tech/VisionFive2/releases/download/JH7110_VF2_515_v5.11.3/visionfive2_fw_payload.img";
+            hash = "sha256-NFUGLX1O5S4NkT3bfHJtKMIs2Oc2UkMdx2UbPc9VnU8=";
           };
         }
       ];
@@ -116,14 +116,14 @@
         {
           name = "u-boot-spl.bin.normal.out";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/edk2/releases/download/REL_VF2_JUN2023/u-boot-spl.bin.normal.out";
+            url = "https://github.com/starfive-tech/edk2/releases/download/REL_VF2_JUN2023-stable202302/u-boot-spl.bin.normal.out";
             hash = "sha256-ep9gAbH3MJ9jDbYWKUaqyyluLVvmXJO5pI2tCtdSsb8=";
           };
         }
         {
           name = "visionfive2_fw_payload.img";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/edk2/releases/download/REL_VF2_JUN2023/JH7110.fd";
+            url = "https://github.com/starfive-tech/edk2/releases/download/REL_VF2_JUN2023-stable202302/JH7110.fd";
             hash = "sha256-KgzB7hPEBPy53RsTgVnOXeAyZKmQD5/I6EBtDuSGYnE=";
           };
         }
