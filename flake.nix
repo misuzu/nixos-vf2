@@ -9,7 +9,7 @@
       url = "github:NickCao/nixpkgs/riscv";
     };
     nixpkgs-native = {
-      url = "github:NixOS/nixpkgs/staging-next";
+      url = "github:NixOS/nixpkgs/nixos-unstable";
     };
     linux-vf2-src = {
       flake = false;
@@ -34,16 +34,12 @@
     };
 
     overlays.native-fixes = self: super: {
-      bind = super.bind.overrideAttrs (old: {
+      catch2_3 = super.catch2_3.overrideAttrs (old: {
+        env.NIX_CFLAGS_COMPILE = "-Wno-error=cast-align";
+      });
+      pixman = super.pixman.overrideAttrs (old: {
         doCheck = false;
       });
-      python311 = super.python311.override {
-        packageOverrides = pyself: pysuper: {
-          numpy = pysuper.numpy.overridePythonAttrs (_: {
-            doCheck = false;
-          });
-        };
-      };
     };
 
     overlays.firmware = self: super: {
