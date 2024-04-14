@@ -84,7 +84,7 @@
         {
           name = "jh7110-recovery.bin";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/Tools/raw/master/recovery/jh7110-recovery-20230322.bin";
+            url = "https://github.com/starfive-tech/Tools/raw/0747c0510e090f69bf7d2884f44903b77b3db5c5/recovery/jh7110-recovery-20230322.bin";
             hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
           };
         }
@@ -102,7 +102,7 @@
         {
           name = "jh7110-recovery.bin";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/Tools/raw/master/recovery/jh7110-recovery-20230322.bin";
+            url = "https://github.com/starfive-tech/Tools/raw/0747c0510e090f69bf7d2884f44903b77b3db5c5/recovery/jh7110-recovery-20230322.bin";
             hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
           };
         }
@@ -126,7 +126,7 @@
         {
           name = "jh7110-recovery.bin";
           path = self.fetchurl {
-            url = "https://github.com/starfive-tech/Tools/raw/master/recovery/jh7110-recovery-20230322.bin";
+            url = "https://github.com/starfive-tech/Tools/raw/0747c0510e090f69bf7d2884f44903b77b3db5c5/recovery/jh7110-recovery-20230322.bin";
             hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
           };
         }
