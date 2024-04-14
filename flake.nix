@@ -44,7 +44,17 @@
           "CROSS_COMPILE=${super.stdenv.cc.targetPrefix}"
           "OPENSBI=${self.opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin"
         ];
-      }).overrideAttrs (_: { patches = [ ]; });
+      }).overrideAttrs (super: {
+        nativeBuildInputs = super.nativeBuildInputs ++ [
+          self.buildPackages.spl-tool
+        ];
+        patches = [ ];
+        installPhase = ''
+          ${super.installPhase}
+
+          spl_tool -c -f spl/u-boot-spl.bin
+        '';
+      });
 
       spl-tool = self.stdenv.mkDerivation {
         name = "spl-tool";
@@ -65,38 +75,18 @@
         sourceRoot = "source/spl_tool";
       };
 
-      firmware-vf2-upstream = self.stdenv.mkDerivation {
-        name = "firmware-vf2-upstream";
-        dontUnpack = true;
-        nativeBuildInputs = [
-          self.buildPackages.spl-tool
-        ];
-        installPhase = ''
-          runHook preInstall
-
-          cp ${self.uboot-vf2}/u-boot-spl.bin .
-          spl_tool -c -f u-boot-spl.bin
-
-          mkdir -p $out
-          install -Dm444 u-boot-spl.bin.normal.out $out/u-boot-spl.bin.normal.out
-          install -Dm444 ${self.uboot-vf2}/u-boot.itb $out/visionfive2_fw_payload.img
-
-          runHook postInstall
-        '';
-      };
-
-      firmware-vf2-recovery = self.linkFarm "firmware-vf2-recovery" [
+      firmware-vf2-upstream = self.linkFarm "firmware-vf2-upstream" [
         {
           name = "jh7110-recovery.bin";
           path = recovery-bin;
         }
         {
           name = "u-boot-spl.bin.normal.out";
-          path = "${self.firmware-vf2-upstream}/u-boot-spl.bin.normal.out";
+          path = "${self.uboot-vf2}/spl/u-boot-spl.bin.normal.out";
         }
         {
           name = "visionfive2_fw_payload.img";
-          path = "${self.firmware-vf2-upstream}/visionfive2_fw_payload.img";
+          path = "${self.uboot-vf2}/u-boot.itb";
         }
       ];
 
@@ -143,7 +133,7 @@
       ];
 
       flash-visionfive2-upstream = self.callPackage ./flash-visionfive2.nix {
-        firmware-vf2 = self.firmware-vf2-recovery;
+        firmware-vf2 = self.firmware-vf2-upstream;
       };
 
       flash-visionfive2-vendor = self.callPackage ./flash-visionfive2.nix {
@@ -262,7 +252,7 @@
         overlays = [ inputs.self.overlays.firmware ];
       };
       flash-visionfive2-upstream = pkgs.flash-visionfive2-upstream.override {
-        firmware-vf2 = pkgsCross.firmware-vf2-recovery;
+        firmware-vf2 = pkgsCross.firmware-vf2-upstream;
       };
     in {
       inherit flash-visionfive2-upstream;
@@ -271,7 +261,6 @@
       inherit (pkgs) firmware-vf2-vendor;
       inherit (pkgs) firmware-vf2-edk2-vendor;
       inherit (pkgsCross) firmware-vf2-upstream;
-      inherit (pkgsCross) firmware-vf2-recovery;
       nixos-cross = inputs.self.nixosConfigurations.nixos-cross.config.system.build.toplevel;
       nixos-cross-image-efi = inputs.self.nixosConfigurations.nixos-cross-image-efi.config.system.build.efiImage;
       nixos-cross-image-iso = inputs.self.nixosConfigurations.nixos-cross-image-iso.config.system.build.isoImage;
