@@ -80,7 +80,32 @@
         '';
       };
 
+      firmware-vf2-recovery = self.linkFarm "firmware-vf2-recovery" [
+        {
+          name = "jh7110-recovery.bin";
+          path = self.fetchurl {
+            url = "https://github.com/starfive-tech/Tools/raw/master/recovery/jh7110-recovery-20230322.bin";
+            hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
+          };
+        }
+        {
+          name = "u-boot-spl.bin.normal.out";
+          path = "${self.firmware-vf2-upstream}/u-boot-spl.bin.normal.out";
+        }
+        {
+          name = "visionfive2_fw_payload.img";
+          path = "${self.firmware-vf2-upstream}/visionfive2_fw_payload.img";
+        }
+      ];
+
       firmware-vf2-vendor = self.linkFarm "firmware-vf2-vendor" [
+        {
+          name = "jh7110-recovery.bin";
+          path = self.fetchurl {
+            url = "https://github.com/starfive-tech/Tools/raw/master/recovery/jh7110-recovery-20230322.bin";
+            hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
+          };
+        }
         {
           name = "u-boot-spl.bin.normal.out";
           path = self.fetchurl {
@@ -99,6 +124,13 @@
 
       firmware-vf2-edk2-vendor = self.linkFarm "firmware-vf2-edk2-vendor" [
         {
+          name = "jh7110-recovery.bin";
+          path = self.fetchurl {
+            url = "https://github.com/starfive-tech/Tools/raw/master/recovery/jh7110-recovery-20230322.bin";
+            hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
+          };
+        }
+        {
           name = "u-boot-spl.bin.normal.out";
           path = self.fetchurl {
             url = "https://github.com/starfive-tech/edk2/releases/download/REL_VF2_JUN2023-stable202302/u-boot-spl.bin.normal.out";
@@ -115,17 +147,14 @@
       ];
 
       flash-visionfive2-upstream = self.callPackage ./flash-visionfive2.nix {
-        starfive-tools = inputs.starfive-tools;
-        firmware-vf2 = self.firmware-vf2-upstream;
+        firmware-vf2 = self.firmware-vf2-recovery;
       };
 
       flash-visionfive2-vendor = self.callPackage ./flash-visionfive2.nix {
-        starfive-tools = inputs.starfive-tools;
         firmware-vf2 = self.firmware-vf2-vendor;
       };
 
       flash-visionfive2-edk2-vendor = self.callPackage ./flash-visionfive2.nix {
-        starfive-tools = inputs.starfive-tools;
         firmware-vf2 = self.firmware-vf2-edk2-vendor;
       };
     };
@@ -237,7 +266,7 @@
         overlays = [ inputs.self.overlays.firmware ];
       };
       flash-visionfive2-upstream = pkgs.flash-visionfive2-upstream.override {
-        firmware-vf2 = pkgsCross.firmware-vf2-upstream;
+        firmware-vf2 = pkgsCross.firmware-vf2-recovery;
       };
     in {
       inherit flash-visionfive2-upstream;
@@ -246,6 +275,7 @@
       inherit (pkgs) firmware-vf2-vendor;
       inherit (pkgs) firmware-vf2-edk2-vendor;
       inherit (pkgsCross) firmware-vf2-upstream;
+      inherit (pkgsCross) firmware-vf2-recovery;
       nixos-cross = inputs.self.nixosConfigurations.nixos-cross.config.system.build.toplevel;
       nixos-cross-image-efi = inputs.self.nixosConfigurations.nixos-cross-image-efi.config.system.build.efiImage;
       nixos-cross-image-iso = inputs.self.nixosConfigurations.nixos-cross-image-iso.config.system.build.isoImage;
