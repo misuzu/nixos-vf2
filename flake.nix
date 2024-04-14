@@ -23,7 +23,12 @@
       });
     };
 
-    overlays.firmware = self: super: {
+    overlays.firmware = self: super: let
+      recovery-bin = self.fetchurl {
+        url = "https://github.com/starfive-tech/Tools/raw/0747c0510e090f69bf7d2884f44903b77b3db5c5/recovery/jh7110-recovery-20230322.bin";
+        hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
+      };
+    in {
       uboot-vf2 = (super.buildUBoot rec {
         version = "2024.04";
         src = super.fetchurl {
@@ -83,10 +88,7 @@
       firmware-vf2-recovery = self.linkFarm "firmware-vf2-recovery" [
         {
           name = "jh7110-recovery.bin";
-          path = self.fetchurl {
-            url = "https://github.com/starfive-tech/Tools/raw/0747c0510e090f69bf7d2884f44903b77b3db5c5/recovery/jh7110-recovery-20230322.bin";
-            hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
-          };
+          path = recovery-bin;
         }
         {
           name = "u-boot-spl.bin.normal.out";
@@ -101,10 +103,7 @@
       firmware-vf2-vendor = self.linkFarm "firmware-vf2-vendor" [
         {
           name = "jh7110-recovery.bin";
-          path = self.fetchurl {
-            url = "https://github.com/starfive-tech/Tools/raw/0747c0510e090f69bf7d2884f44903b77b3db5c5/recovery/jh7110-recovery-20230322.bin";
-            hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
-          };
+          path = recovery-bin;
         }
         {
           name = "u-boot-spl.bin.normal.out";
@@ -125,10 +124,7 @@
       firmware-vf2-edk2-vendor = self.linkFarm "firmware-vf2-edk2-vendor" [
         {
           name = "jh7110-recovery.bin";
-          path = self.fetchurl {
-            url = "https://github.com/starfive-tech/Tools/raw/0747c0510e090f69bf7d2884f44903b77b3db5c5/recovery/jh7110-recovery-20230322.bin";
-            hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
-          };
+          path = recovery-bin;
         }
         {
           name = "u-boot-spl.bin.normal.out";
