@@ -23,7 +23,12 @@
       });
     };
 
-    overlays.firmware = self: super: {
+    overlays.firmware = self: super: let
+      recovery-bin = self.fetchurl {
+        url = "https://github.com/starfive-tech/Tools/raw/0747c0510e090f69bf7d2884f44903b77b3db5c5/recovery/jh7110-recovery-20230322.bin";
+        hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
+      };
+    in {
       uboot-vf2 = (super.buildUBoot rec {
         version = "2024.04";
         src = super.fetchurl {
@@ -39,7 +44,17 @@
           "CROSS_COMPILE=${super.stdenv.cc.targetPrefix}"
           "OPENSBI=${self.opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin"
         ];
-      }).overrideAttrs (_: { patches = [ ]; });
+      }).overrideAttrs (super: {
+        nativeBuildInputs = super.nativeBuildInputs ++ [
+          self.buildPackages.spl-tool
+        ];
+        patches = [ ];
+        installPhase = ''
+          ${super.installPhase}
+
+          spl_tool -c -f spl/u-boot-spl.bin
+        '';
+      });
 
       spl-tool = self.stdenv.mkDerivation {
         name = "spl-tool";
@@ -60,27 +75,26 @@
         sourceRoot = "source/spl_tool";
       };
 
-      firmware-vf2-upstream = self.stdenv.mkDerivation {
-        name = "firmware-vf2-upstream";
-        dontUnpack = true;
-        nativeBuildInputs = [
-          self.buildPackages.spl-tool
-        ];
-        installPhase = ''
-          runHook preInstall
-
-          cp ${self.uboot-vf2}/u-boot-spl.bin .
-          spl_tool -c -f u-boot-spl.bin
-
-          mkdir -p $out
-          install -Dm444 u-boot-spl.bin.normal.out $out/u-boot-spl.bin.normal.out
-          install -Dm444 ${self.uboot-vf2}/u-boot.itb $out/visionfive2_fw_payload.img
-
-          runHook postInstall
-        '';
-      };
+      firmware-vf2-upstream = self.linkFarm "firmware-vf2-upstream" [
+        {
+          name = "jh7110-recovery.bin";
+          path = recovery-bin;
+        }
+        {
+          name = "u-boot-spl.bin.normal.out";
+          path = "${self.uboot-vf2}/spl/u-boot-spl.bin.normal.out";
+        }
+        {
+          name = "visionfive2_fw_payload.img";
+          path = "${self.uboot-vf2}/u-boot.itb";
+        }
+      ];
 
       firmware-vf2-vendor = self.linkFarm "firmware-vf2-vendor" [
+        {
+          name = "jh7110-recovery.bin";
+          path = recovery-bin;
+        }
         {
           name = "u-boot-spl.bin.normal.out";
           path = self.fetchurl {
@@ -99,6 +113,10 @@
 
       firmware-vf2-edk2-vendor = self.linkFarm "firmware-vf2-edk2-vendor" [
         {
+          name = "jh7110-recovery.bin";
+          path = recovery-bin;
+        }
+        {
           name = "u-boot-spl.bin.normal.out";
           path = self.fetchurl {
             url = "https://github.com/starfive-tech/edk2/releases/download/REL_VF2_JUN2023-stable202302/u-boot-spl.bin.normal.out";
@@ -115,17 +133,14 @@
       ];
 
       flash-visionfive2-upstream = self.callPackage ./flash-visionfive2.nix {
-        starfive-tools = inputs.starfive-tools;
         firmware-vf2 = self.firmware-vf2-upstream;
       };
 
       flash-visionfive2-vendor = self.callPackage ./flash-visionfive2.nix {
-        starfive-tools = inputs.starfive-tools;
         firmware-vf2 = self.firmware-vf2-vendor;
       };
 
       flash-visionfive2-edk2-vendor = self.callPackage ./flash-visionfive2.nix {
-        starfive-tools = inputs.starfive-tools;
         firmware-vf2 = self.firmware-vf2-edk2-vendor;
       };
     };

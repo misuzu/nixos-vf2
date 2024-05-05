@@ -4,7 +4,6 @@
 , lrzsz
 , picocom
 , expect
-, starfive-tools
 , firmware-vf2
 }:
 let
@@ -15,7 +14,7 @@ let
     expect "CC"
     send "\x01\x13"
     expect "*** file:"
-    send "${starfive-tools}/recovery/jh7110-recovery-20230322.bin"
+    send "${firmware-vf2}/jh7110-recovery.bin"
     send "\r"
     expect "Transfer complete"
 
