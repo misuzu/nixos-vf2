@@ -5,7 +5,7 @@
   };
 
   inputs.nixpkgs.url = "github:NickCao/nixpkgs/riscv";
-  inputs.nixpkgs-native.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs-native.url = "github:NickCao/nixpkgs/riscv";
 
   outputs = inputs: {
     overlays.default = self: super: {
