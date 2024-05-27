@@ -29,16 +29,22 @@
         hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
       };
     in {
+      opensbi = super.opensbi.overrideAttrs (attrs: {
+        makeFlags = attrs.makeFlags ++ [
+          # opensbi generic platform default FW_TEXT_START is 0x80000000
+          # For JH7110, need to specify the FW_TEXT_START to 0x40000000
+          # Otherwise, the fw_payload.bin downloading via jtag will not run.
+          # https://github.com/starfive-tech/VisionFive2/blob/7733673d27052dc5a48f1cb1d060279dfa3f0241/Makefile#L274
+          # Also matches u-boot documentation: https://docs.u-boot.org/en/latest/board/starfive/visionfive2.html
+          "FW_TEXT_START=0x40000000"
+          "FW_OPTIONS=0"
+        ];
+      });
       uboot-vf2 = (super.buildUBoot rec {
-        version = "2024.04";
-        src = super.fetchurl {
-          url = "https://ftp.denx.de/pub/u-boot/u-boot-${version}.tar.bz2";
-          hash = "sha256-GKhT/jn6160DqQzC1Cda6u1tppc13vrDSSuAUIhD3Uo=";
-        };
         defconfig = "starfive_visionfive2_defconfig";
         filesToInstall = [
           "u-boot.itb"
-          "spl/u-boot-spl.bin"
+          "spl/u-boot-spl.bin.normal.out"
         ];
         makeFlags = [
           "CROSS_COMPILE=${super.stdenv.cc.targetPrefix}"
@@ -50,9 +56,8 @@
         ];
         patches = [ ];
         installPhase = ''
-          ${super.installPhase}
-
           spl_tool -c -f spl/u-boot-spl.bin
+          ${super.installPhase}
         '';
       });
 
@@ -82,7 +87,7 @@
         }
         {
           name = "u-boot-spl.bin.normal.out";
-          path = "${self.uboot-vf2}/spl/u-boot-spl.bin.normal.out";
+          path = "${self.uboot-vf2}/u-boot-spl.bin.normal.out";
         }
         {
           name = "visionfive2_fw_payload.img";
