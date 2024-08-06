@@ -23,6 +23,9 @@
     "nvme"
   ];
 
+  boot.loader.systemd-boot.enable = true;
+
+  hardware.deviceTree.enable = true;
   hardware.deviceTree.name = "starfive/jh7110-starfive-visionfive-2-v1.3b.dtb";
 
   environment.systemPackages = with pkgs; [
@@ -54,5 +57,5 @@
 
   documentation.nixos.enable = false;
 
-  system.stateVersion = "22.11";
+  system.stateVersion = "24.05";
 }

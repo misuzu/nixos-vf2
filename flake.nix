@@ -165,7 +165,7 @@
             };
           })
           ./configuration.nix
-          ./systemd-boot.nix
+          ./hardware-configuration.nix
         ];
       };
       nixos-cross-image-efi = inputs.nixpkgs.lib.nixosSystem {
@@ -180,7 +180,7 @@
           })
           ./configuration.nix
           ./efi-image.nix
-          ./systemd-boot.nix
+          ./hardware-configuration.nix
         ];
       };
       nixos-cross-image-iso = inputs.nixpkgs.lib.nixosSystem {
@@ -210,7 +210,7 @@
             };
           })
           ./configuration.nix
-          ./systemd-boot.nix
+          ./hardware-configuration.nix
         ];
       };
       nixos-native-image-efi = inputs.nixpkgs-native.lib.nixosSystem {
@@ -226,7 +226,7 @@
           })
           ./configuration.nix
           ./efi-image.nix
-          ./systemd-boot.nix
+          ./hardware-configuration.nix
         ];
       };
       nixos-native-image-iso = inputs.nixpkgs-native.lib.nixosSystem {

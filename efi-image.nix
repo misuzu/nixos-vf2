@@ -33,17 +33,18 @@
 
         kernelDest="$(toEspName "${toplevel}/kernel")"
         initrdDest="$(toEspName "${toplevel}/initrd")"
+        dtbDest="$(basename "${config.hardware.deviceTree.name}").efi"
 
         cp --no-preserve=mode "${toplevel}/kernel" "esp/EFI/nixos/$kernelDest"
         cp --no-preserve=mode "${toplevel}/initrd" "esp/EFI/nixos/$initrdDest"
-        cp --no-preserve=mode -r ${config.hardware.deviceTree.package} esp/dtbs
+        cp --no-preserve=mode "${config.hardware.deviceTree.package}/${config.hardware.deviceTree.name}" "esp/EFI/nixos/$dtbDest"
 
         cat > esp/loader/entries/initial-nixos.conf <<END
         title NixOS
         version 0
-        linux /efi/nixos/$kernelDest
-        initrd /efi/nixos/$initrdDest
-        devicetree /dtbs/${config.hardware.deviceTree.name}
+        linux /EFI/nixos/$kernelDest
+        initrd /EFI/nixos/$initrdDest
+        devicetree /EFI/nixos/$dtbDest
         options init=${toplevel}/init $(cat ${toplevel}/kernel-params)
         END
       '';
