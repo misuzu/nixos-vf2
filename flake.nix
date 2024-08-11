@@ -15,12 +15,6 @@
     };
 
     overlays.native-fixes = self: super: {
-      catch2_3 = super.catch2_3.overrideAttrs (old: {
-        env.NIX_CFLAGS_COMPILE = "-Wno-error=cast-align";
-      });
-      pixman = super.pixman.overrideAttrs (old: {
-        doCheck = false;
-      });
     };
 
     overlays.firmware = self: super: let
