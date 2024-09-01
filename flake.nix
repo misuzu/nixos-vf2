@@ -15,6 +15,9 @@
     };
 
     overlays.native-fixes = self: super: {
+      pixman = super.pixman.overrideAttrs (old: {
+        doCheck = false;
+      });
     };
 
     overlays.firmware = self: super: let
