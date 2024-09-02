@@ -15,6 +15,9 @@
     };
 
     overlays.native-fixes = self: super: {
+      cryptsetup = super.cryptsetup.overrideAttrs (old: {
+        doCheck = false;
+      });
       pixman = super.pixman.overrideAttrs (old: {
         doCheck = false;
       });
