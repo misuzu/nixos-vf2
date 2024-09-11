@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  boot.kernelPackages = pkgs.linuxPackages_vf2;
+  boot.kernelPackages = pkgs.linuxPackages_testing;
   boot.kernelParams = [
     "console=tty0"
     "console=ttyS0,115200"

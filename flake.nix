@@ -8,12 +8,6 @@
   inputs.nixpkgs-native.url = "github:NickCao/nixpkgs/riscv";
 
   outputs = inputs: {
-    overlays.default = self: super: {
-      linuxPackages_vf2 = self.linuxPackagesFor (self.callPackage ./linux-vf2.nix {
-        kernelPatches = [ ];
-      });
-    };
-
     overlays.native-fixes = self: super: {
       cryptsetup = super.cryptsetup.overrideAttrs (old: {
         doCheck = false;
@@ -159,7 +153,6 @@
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
-              overlays = [ inputs.self.overlays.default ];
               localSystem.config = "x86_64-linux";
               crossSystem.config = "riscv64-linux";
             };
@@ -173,7 +166,6 @@
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
-              overlays = [ inputs.self.overlays.default ];
               localSystem.config = "x86_64-linux";
               crossSystem.config = "riscv64-linux";
             };
@@ -188,7 +180,6 @@
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
-              overlays = [ inputs.self.overlays.default ];
               localSystem.config = "x86_64-linux";
               crossSystem.config = "riscv64-linux";
             };
@@ -204,7 +195,6 @@
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
               overlays = [
-                inputs.self.overlays.default
                 inputs.self.overlays.native-fixes
               ];
             };
@@ -219,7 +209,6 @@
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
               overlays = [
-                inputs.self.overlays.default
                 inputs.self.overlays.native-fixes
               ];
             };
@@ -235,7 +224,6 @@
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
               overlays = [
-                inputs.self.overlays.default
                 inputs.self.overlays.native-fixes
               ];
             };
