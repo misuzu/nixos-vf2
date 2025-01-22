@@ -4,17 +4,11 @@
     extra-trusted-public-keys = [ "cache.ztier.link-1:3P5j2ZB9dNgFFFVkCQWT3mh0E+S3rIWtZvoql64UaXM=" ];
   };
 
-  inputs.nixpkgs.url = "github:NickCao/nixpkgs/riscv";
-  inputs.nixpkgs-native.url = "github:NickCao/nixpkgs/riscv";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs-native.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs = inputs: {
     overlays.native-fixes = self: super: {
-      cryptsetup = super.cryptsetup.overrideAttrs (old: {
-        doCheck = false;
-      });
-      pixman = super.pixman.overrideAttrs (old: {
-        doCheck = false;
-      });
     };
 
     overlays.firmware = self: super: let
