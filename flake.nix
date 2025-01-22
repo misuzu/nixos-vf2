@@ -38,14 +38,19 @@
           "CROSS_COMPILE=${super.stdenv.cc.targetPrefix}"
           "OPENSBI=${self.opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin"
         ];
-      }).overrideAttrs (super: {
-        nativeBuildInputs = super.nativeBuildInputs ++ [
+      }).overrideAttrs (prevAttrs: {
+        nativeBuildInputs = prevAttrs.nativeBuildInputs ++ [
           self.buildPackages.spl-tool
         ];
-        patches = [ ];
+        patches = [
+          (super.fetchpatch {
+            url = "https://raw.githubusercontent.com/1715173329/openwrt-official/4e68103c4eb93d3f9b9359742c3c377ee2844943/package/boot/uboot-rockchip/patches/002-scripts-dtc-pylibfdt-libfdt-i_shipped-Use-SWIG_AppendOutp.patch";
+            hash = "sha256-N97cXu2XmCdoA6sSAbBM9s/1GcUMZfgP7iOMaYydcPo=";
+          })
+        ];
         installPhase = ''
           spl_tool -c -f spl/u-boot-spl.bin
-          ${super.installPhase}
+          ${prevAttrs.installPhase}
         '';
       });
 
