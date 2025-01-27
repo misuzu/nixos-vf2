@@ -3,7 +3,7 @@
 {
   fileSystems.${config.boot.loader.efi.efiSysMountPoint}.neededForBoot = true;
   fileSystems."/".autoResize = true;
-  # boot.growPartition = true;
+  boot.growPartition = true;
 
   system.build.efiImage =
     let
