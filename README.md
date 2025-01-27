@@ -6,7 +6,7 @@ Make the serial connection according to the section "Recovering the Bootloader" 
 Flip the tiny switches towards the H (as opposed to L) marking on the PCB (towards edge of the board) as described that section (Step 2).
 Power up, and assuming your serial device is `/dev/ttyUSB0`, run:
 
-```shellSession
+```shell
 nix run github:misuzu/nixos-vf2#flash-visionfive2-upstream /dev/ttyUSB0
 ```
 
@@ -47,12 +47,14 @@ sudo sgdisk -g --clear --set-alignment=1 \
 
 After partitioning, write `u-boot-spl.bin.normal.out` to the first partition and `visionfive2_fw_payload.img` to the second partition.
 ```shell
-sudo dd if=u-boot-spl.bin.normal.out of=/dev/your-disk1 bs=4096 status=progress
-sudo dd if=visionfive2_fw_payload.img of=/dev/your-disk2 bs=4096 status=progress
+nix build github:misuzu/nixos-vf2#firmware-vf2-upstream
+sudo dd if=result/u-boot-spl.bin.normal.out of=/dev/your-disk1 bs=4096 status=progress
+sudo dd if=result/visionfive2_fw_payload.img of=/dev/your-disk2 bs=4096 status=progress
 ```
 
 Now use `dd` to copy efi and root partition from the image:
 ```shell
+nix build github:misuzu/nixos-vf2#nixos-cross-image-efi
 sudo losetup -P /dev/loop0 result/nixos-cross-jh7110-starfive-visionfive-2-v1.3b.img
 sudo dd if=/dev/loop0p1 of=/dev/your-disk3 bs=1M status=progress
 sudo dd if=/dev/loop0p2 of=/dev/your-disk4 bs=1M status=progress
