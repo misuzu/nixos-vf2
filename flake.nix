@@ -152,8 +152,8 @@
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
-              localSystem.config = "x86_64-linux";
-              crossSystem.config = "riscv64-linux";
+              localSystem.system = "x86_64-linux";
+              crossSystem.system = "riscv64-linux";
             };
           })
           ./configuration.nix
@@ -165,8 +165,8 @@
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
-              localSystem.config = "x86_64-linux";
-              crossSystem.config = "riscv64-linux";
+              localSystem.system = "x86_64-linux";
+              crossSystem.system = "riscv64-linux";
             };
           })
           ./configuration.nix
@@ -179,8 +179,8 @@
         modules = [
           ({ lib, config, pkgs, modulesPath, ... }: {
             nixpkgs = {
-              localSystem.config = "x86_64-linux";
-              crossSystem.config = "riscv64-linux";
+              localSystem.system = "x86_64-linux";
+              crossSystem.system = "riscv64-linux";
             };
           })
           ./configuration.nix
@@ -236,8 +236,8 @@
     packages.x86_64-linux = let
       pkgsCross = import inputs.nixpkgs {
         overlays = [ inputs.self.overlays.firmware ];
-        localSystem.config = "x86_64-linux";
-        crossSystem.config = "riscv64-linux";
+        localSystem.system = "x86_64-linux";
+        crossSystem.system = "riscv64-linux";
       };
       pkgs = import inputs.nixpkgs-native {
         system = "x86_64-linux";
