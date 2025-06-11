@@ -17,56 +17,6 @@
         hash = "sha256-HIr7ftdgXnr1SFagIvgCGcqa1NrrDECjIPxHFj/52eQ=";
       };
     in {
-      opensbi = super.opensbi.overrideAttrs (attrs: {
-        makeFlags = attrs.makeFlags ++ [
-          # opensbi generic platform default FW_TEXT_START is 0x80000000
-          # For JH7110, need to specify the FW_TEXT_START to 0x40000000
-          # Otherwise, the fw_payload.bin downloading via jtag will not run.
-          # https://github.com/starfive-tech/VisionFive2/blob/7733673d27052dc5a48f1cb1d060279dfa3f0241/Makefile#L274
-          # Also matches u-boot documentation: https://docs.u-boot.org/en/latest/board/starfive/visionfive2.html
-          "FW_TEXT_START=0x40000000"
-          "FW_OPTIONS=0"
-        ];
-      });
-      uboot-vf2 = (super.buildUBoot rec {
-        defconfig = "starfive_visionfive2_defconfig";
-        filesToInstall = [
-          "u-boot.itb"
-          "spl/u-boot-spl.bin.normal.out"
-        ];
-        makeFlags = [
-          "CROSS_COMPILE=${super.stdenv.cc.targetPrefix}"
-          "OPENSBI=${self.opensbi}/share/opensbi/lp64/generic/firmware/fw_dynamic.bin"
-        ];
-      }).overrideAttrs (prevAttrs: {
-        nativeBuildInputs = prevAttrs.nativeBuildInputs ++ [
-          self.buildPackages.spl-tool
-        ];
-        installPhase = ''
-          spl_tool -c -f spl/u-boot-spl.bin
-          ${prevAttrs.installPhase}
-        '';
-      });
-
-      spl-tool = self.stdenv.mkDerivation {
-        name = "spl-tool";
-        src = super.fetchFromGitHub {
-          owner = "starfive-tech";
-          repo = "Tools";
-          rev = "0747c0510e090f69bf7d2884f44903b77b3db5c5";
-          hash = "sha256-up58PtvnZTi6rGZcP2VwZrZBYajrZf4MzILixqaNKbE=";
-        };
-        installPhase = ''
-          runHook preInstall
-
-          mkdir -p "$out/bin/"
-          cp spl_tool "$out/bin/"
-
-          runHook postInstall
-        '';
-        sourceRoot = "source/spl_tool";
-      };
-
       firmware-vf2-upstream = self.linkFarm "firmware-vf2-upstream" [
         {
           name = "jh7110-recovery.bin";
@@ -74,11 +24,11 @@
         }
         {
           name = "u-boot-spl.bin.normal.out";
-          path = "${self.uboot-vf2}/u-boot-spl.bin.normal.out";
+          path = "${super.ubootVisionFive2}/u-boot-spl.bin.normal.out";
         }
         {
           name = "visionfive2_fw_payload.img";
-          path = "${self.uboot-vf2}/u-boot.itb";
+          path = "${super.ubootVisionFive2}/u-boot.itb";
         }
       ];
 
